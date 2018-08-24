@@ -12,6 +12,7 @@ architectures:
 
 slots:
   wine-base-devel:
+    content: wine-base-devel
     interface: content
     source:
       read:
