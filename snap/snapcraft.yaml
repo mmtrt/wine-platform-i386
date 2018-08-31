@@ -60,7 +60,7 @@ parts:
       dpkg --add-architecture i386
       apt update
 
-  wine-stable:
+  wine:
     plugin: nil
     build-attributes:
       - no-system-libraries
@@ -70,13 +70,16 @@ parts:
     override-build: |
       snapcraftctl build
 
-      WINE_REL="wine-stable"
-      WINE_ARCH="i386"
       WINE_VER="3.0.2"
+      WINE_VER_DEV="3.14.0"
 
       # wget and dpkg extract the wine debs
-      DEB_URLS="https://dl.winehq.org/wine-builds/ubuntu/pool/main/${WINE_REL}-${WINE_ARCH}_${WINE_VER}~xenial_${WINE_ARCH}.deb \
-                https://dl.winehq.org/wine-builds/ubuntu/pool/main/${WINE_REL}_${WINE_VER}~xenial_${WINE_ARCH}.deb"
+      DEB_URLS="https://dl.winehq.org/wine-builds/ubuntu/pool/main/wine-stable-i386_${WINE_VER}~xenial_i386.deb \
+      https://dl.winehq.org/wine-builds/ubuntu/pool/main/wine-stable_${WINE_VER}~xenial_i386.deb \
+      https://dl.winehq.org/wine-builds/ubuntu/pool/main/wine-devel-i386_${WINE_VER_DEV}~xenial_i386.deb \
+      https://dl.winehq.org/wine-builds/ubuntu/pool/main/wine-devel_${WINE_VER_DEV}~xenial_i386.deb \
+      https://dl.winehq.org/wine-builds/ubuntu/pool/main/wine-staging-i386_${WINE_VER_DEV}~xenial_i386.deb \
+      https://dl.winehq.org/wine-builds/ubuntu/pool/main/wine-staging_${WINE_VER_DEV}~xenial_i386.deb"
 
       for DEB_URL in ${DEB_URLS}; do
         DEB=$(basename "${DEB_URL}")
@@ -87,79 +90,17 @@ parts:
         rm -f "${SNAPCRAFT_PART_INSTALL}/${DEB}"
       done
 
+      # Copy fonts from wine-staging
+      cp -R ${SNAPCRAFT_PART_INSTALL}/opt/wine-staging/share/wine/fonts ${SNAPCRAFT_PART_INSTALL}/usr/share
+
       # Cleanup
-      rm -rf ${SNAPCRAFT_PART_INSTALL}/opt/${WINE_REL}/share/applications
-      rm -rf ${SNAPCRAFT_PART_INSTALL}/opt/${WINE_REL}/share/man
-      rm -rf ${SNAPCRAFT_PART_INSTALL}/usr/share/doc
-      rm -rf ${SNAPCRAFT_PART_INSTALL}/usr/share/lintian
-    after:
-      - enable-i386
-
-  wine-devel:
-    plugin: nil
-    build-attributes:
-      - no-system-libraries
-    build-packages:
-      - dpkg
-      - wget
-    override-build: |
-      snapcraftctl build
-
-      WINE_REL="wine-devel"
-      WINE_ARCH="i386"
-      WINE_VER="3.14.0"
-
-      # wget and dpkg extract the wine debs
-      DEB_URLS="https://dl.winehq.org/wine-builds/ubuntu/pool/main/${WINE_REL}-${WINE_ARCH}_${WINE_VER}~xenial_${WINE_ARCH}.deb \
-                https://dl.winehq.org/wine-builds/ubuntu/pool/main/${WINE_REL}_${WINE_VER}~xenial_${WINE_ARCH}.deb"
-
-      for DEB_URL in ${DEB_URLS}; do
-        DEB=$(basename "${DEB_URL}")
-        echo "Downloading ${DEB_URL}..."
-        wget --quiet "${DEB_URL}" -O "${SNAPCRAFT_PART_INSTALL}/${DEB}"
-        echo "Unpacking ${DEB}..."
-        dpkg -x "${SNAPCRAFT_PART_INSTALL}/${DEB}" ${SNAPCRAFT_PART_INSTALL}
-        rm -f "${SNAPCRAFT_PART_INSTALL}/${DEB}"
+      for REL in wine-stable wine-devel wine-staging; do
+      rm -rf ${SNAPCRAFT_PART_INSTALL}/opt/${REL}/share/applications
+      rm -rf ${SNAPCRAFT_PART_INSTALL}/opt/${REL}/share/man
+      rm -rf ${SNAPCRAFT_PART_INSTALL}/opt/${REL}/share/wine/fonts
+      cd ${SNAPCRAFT_PART_INSTALL}/opt/${REL}/share/wine
+      ln -s ../../../../usr/share/fonts .
       done
-
-      # Cleanup
-      rm -rf ${SNAPCRAFT_PART_INSTALL}/opt/${WINE_REL}/share/applications
-      rm -rf ${SNAPCRAFT_PART_INSTALL}/opt/${WINE_REL}/share/man
-      rm -rf ${SNAPCRAFT_PART_INSTALL}/usr/share/doc
-      rm -rf ${SNAPCRAFT_PART_INSTALL}/usr/share/lintian
-    after:
-      - enable-i386
-
-  wine-staging:
-    plugin: nil
-    build-attributes:
-      - no-system-libraries
-    build-packages:
-      - dpkg
-      - wget
-    override-build: |
-      snapcraftctl build
-
-      WINE_REL="wine-staging"
-      WINE_ARCH="i386"
-      WINE_VER="3.14.0"
-
-      # wget and dpkg extract the wine debs
-      DEB_URLS="https://dl.winehq.org/wine-builds/ubuntu/pool/main/${WINE_REL}-${WINE_ARCH}_${WINE_VER}~xenial_${WINE_ARCH}.deb \
-                https://dl.winehq.org/wine-builds/ubuntu/pool/main/${WINE_REL}_${WINE_VER}~xenial_${WINE_ARCH}.deb"
-
-      for DEB_URL in ${DEB_URLS}; do
-        DEB=$(basename "${DEB_URL}")
-        echo "Downloading ${DEB_URL}..."
-        wget --quiet "${DEB_URL}" -O "${SNAPCRAFT_PART_INSTALL}/${DEB}"
-        echo "Unpacking ${DEB}..."
-        dpkg -x "${SNAPCRAFT_PART_INSTALL}/${DEB}" ${SNAPCRAFT_PART_INSTALL}
-        rm -f "${SNAPCRAFT_PART_INSTALL}/${DEB}"
-      done
-
-      # Cleanup
-      rm -rf ${SNAPCRAFT_PART_INSTALL}/opt/${WINE_REL}/share/applications
-      rm -rf ${SNAPCRAFT_PART_INSTALL}/opt/${WINE_REL}/share/man
       rm -rf ${SNAPCRAFT_PART_INSTALL}/usr/share/doc
       rm -rf ${SNAPCRAFT_PART_INSTALL}/usr/share/lintian
     after:
