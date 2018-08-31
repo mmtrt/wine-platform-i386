@@ -90,16 +90,10 @@ parts:
         rm -f "${SNAPCRAFT_PART_INSTALL}/${DEB}"
       done
 
-      # Copy fonts from wine-staging
-      cp -R ${SNAPCRAFT_PART_INSTALL}/opt/wine-staging/share/wine/fonts ${SNAPCRAFT_PART_INSTALL}/usr/share
-
       # Cleanup
       for REL in wine-stable wine-devel wine-staging; do
       rm -rf ${SNAPCRAFT_PART_INSTALL}/opt/${REL}/share/applications
       rm -rf ${SNAPCRAFT_PART_INSTALL}/opt/${REL}/share/man
-      rm -rf ${SNAPCRAFT_PART_INSTALL}/opt/${REL}/share/wine/fonts
-      cd ${SNAPCRAFT_PART_INSTALL}/opt/${REL}/share/wine
-      ln -s ../../../../usr/share/fonts .
       done
       rm -rf ${SNAPCRAFT_PART_INSTALL}/usr/share/doc
       rm -rf ${SNAPCRAFT_PART_INSTALL}/usr/share/lintian
