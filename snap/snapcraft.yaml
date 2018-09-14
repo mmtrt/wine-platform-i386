@@ -70,7 +70,7 @@ parts:
     override-build: |
       snapcraftctl build
 
-      WINE_VER="3.0.2"
+      WINE_VER="3.0.3"
       WINE_VER_DEV="3.15.0"
 
       # wget and dpkg extract the wine debs
