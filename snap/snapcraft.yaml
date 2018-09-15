@@ -195,6 +195,8 @@ parts:
       - yad:i386                # winetricks
     override-build: |
       snapcraftctl build
+      wget --quiet "https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks" -O $SNAPCRAFT_PART_INSTALL/winetricks
+      chmod +x $SNAPCRAFT_PART_INSTALL/winetricks
       rm -rf $SNAPCRAFT_PART_INSTALL/etc/init
       rm -rf $SNAPCRAFT_PART_INSTALL/etc/init.d
       rm -rf $SNAPCRAFT_PART_INSTALL/etc/logrotate.d
