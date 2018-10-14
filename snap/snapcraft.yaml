@@ -71,7 +71,7 @@ parts:
       snapcraftctl build
 
       WINE_VER="3.0.3"
-      WINE_VER_DEV="3.17.0"
+      WINE_VER_DEV="3.18.0"
 
       # wget and dpkg extract the wine debs
       DEB_URLS="https://dl.winehq.org/wine-builds/ubuntu/pool/main/wine-stable-i386_${WINE_VER}~xenial_i386.deb \
