@@ -110,6 +110,7 @@ parts:
       - glib-networking:i386
       - gstreamer1.0-plugins-base:i386
       - i965-va-driver:i386
+      - locales-all:i386
       - libasn1-8-heimdal:i386
       - libasound2:i386
       - libasound2-plugins:i386
